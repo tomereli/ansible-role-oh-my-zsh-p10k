@@ -13,6 +13,7 @@
   become_user: '{{ username }}'
   git:
     repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
+    version: master
     dest: '~/.oh-my-zsh'
   loop: '{{ users }}'
   loop_control:
@@ -24,6 +25,7 @@
   become_user: '{{ username }}'
   git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
+    version: master
     dest: '~/.oh-my-zsh/custom/themes/powerlevel10k'
   loop: '{{ users }}'
   loop_control:
@@ -35,6 +37,7 @@
   become_user: '{{ username }}'
   git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+    version: master
     dest: '~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
   loop: '{{ users }}'
   loop_control:
@@ -46,6 +49,7 @@
   become_user: '{{ username }}'
   git:
     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
+    version: master
     dest: '~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
   loop: '{{ users }}'
   loop_control:
