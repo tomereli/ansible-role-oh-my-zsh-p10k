@@ -1,0 +1,30 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    users:
+      - root
+      - tomereli
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure {{ username }} user exists
+      user:
+        name: "{{ username }}"
+        state: present
+      loop: '{{ users }}'
+      loop_control:
+        loop_var: 'username'
+      when: users is defined
+    
+  roles:
+    - role: tomereli.oh-my-zsh-p10k
+      oh_my_zsh_plugins:
+        - git
+        - zsh-autosuggestions
+        - zsh-syntax-highlighting
+        - kubectl
+        - docker

@@ -1,0 +1,9 @@
+---
+# default theme
+oh_my_zsh_theme: powerlevel10k
+
+# default plugins
+oh_my_zsh_plugins:
+  - git
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
