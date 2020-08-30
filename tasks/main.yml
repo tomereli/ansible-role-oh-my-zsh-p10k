@@ -10,84 +10,70 @@
 
 - name: clone oh-my-zsh for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   git:
     repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
     version: master
     dest: '~/.oh-my-zsh'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined
 
 - name: clone powerlevel10k for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
     version: master
     dest: '~/.oh-my-zsh/custom/themes/powerlevel10k'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined
 
 - name: clone zsh-autosuggestions for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
     version: master
     dest: '~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined
 
 - name: clone zsh-syntax-highlighting for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   git:
     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
     version: master
     dest: '~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined
 
 - name: write .zshrc for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   template:
     src: .zshrc.j2
     dest: '~/.zshrc'
     backup: yes
     mode: 'u=rw,go=r'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined
 
 - name: write .p10k.zsh for users
   become: yes
-  become_user: '{{ username }}'
+  become_user: '{{ item.username }}'
   copy:
     src: .p10k.zsh
     dest: ~/.p10k.zsh
     backup: yes
     mode: 'u=rw,go=r'
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined 
 
 - name: set default shell for users
   become: yes
   user:
-    name: '{{ username }}'
+    name: '{{ item.username }}'
     shell: /bin/zsh
-  loop: '{{ users }}'
-  loop_control:
-    loop_var: username
+  with_items: '{{ users }}'
   when: users is defined 

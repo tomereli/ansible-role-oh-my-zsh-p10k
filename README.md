@@ -36,8 +36,8 @@ The following playbook configures oh-my-zsh with powerlevel10k theme for `testus
     - role: tomereli.oh-my-zsh-p10k
       vars:
         users:
-            - testuser1
-            - testuser2
+            - username: testuser1
+            - username: testuser2
 ```
 
 ## License

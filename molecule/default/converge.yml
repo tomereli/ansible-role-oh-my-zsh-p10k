@@ -1,30 +1,34 @@
 ---
 - name: Converge
   hosts: all
+  environment: "{{ proxy_env }}"
   vars:
+    proxy_env:
+      http_proxy: "{{ lookup('env','http_proxy') }}"
+      https_proxy: "{{ lookup('env','https_proxy') }}"
+      ftp_proxy: "{{ lookup('env','ftp_proxy') }}"
+      no_proxy: "{{ lookup('env','no_proxy') }}"
     users:
-      - root
-      - tomereli
+      - username: root
+      - username: tomereli
+    oh_my_zsh_plugins:
+      - git
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+      - kubectl
+      - docker
 
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
 
-    - name: Ensure {{ username }} user exists
+    - name: Ensure user exists
       user:
-        name: "{{ username }}"
+        name: "{{ item.username }}"
         state: present
-      loop: '{{ users }}'
-      loop_control:
-        loop_var: 'username'
+      with_items: '{{ users }}'
       when: users is defined
     
   roles:
     - role: tomereli.oh-my-zsh-p10k
-      oh_my_zsh_plugins:
-        - git
-        - zsh-autosuggestions
-        - zsh-syntax-highlighting
-        - kubectl
-        - docker
