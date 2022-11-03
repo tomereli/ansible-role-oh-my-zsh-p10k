@@ -52,7 +52,7 @@
   become: yes
   become_user: '{{ item.username }}'
   template:
-    src: .zshrc.j2
+    src: "{{ zshrc_src_template }}"
     dest: '~/.zshrc'
     backup: yes
     mode: 'u=rw,go=r'

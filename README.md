@@ -12,7 +12,7 @@ Internet access - if running behind proxy, consider using `tomereli.proxy` role 
 ## Role Variables
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
-    
+
     # default theme
     oh_my_zsh_theme: powerlevel10k
 
@@ -21,6 +21,9 @@ Available variables are listed below, along with default values (see `defaults/m
         - git
         - zsh-autosuggestions
         - zsh-syntax-highlighting
+
+    # default .zshrc template
+    zshrc_src_template: .zshrc.j2 # Points to the default template delivered with this role
 
 ## Dependencies
 
@@ -39,6 +42,20 @@ The following playbook configures oh-my-zsh with powerlevel10k theme for `testus
             - username: testuser1
             - username: testuser2
 ```
+
+If you want to provide your own template for the `.zshrc` file, you can change the `zshrc_src_template` variable so it points to your custom template. For example, store your template under `templates/custom.zshrc.j2` in your repo directory and use this playbook:
+
+```yaml
+- hosts: all
+  roles:
+    - role: tomereli.oh-my-zsh-p10k
+      vars:
+        users:
+            - username: testuser1
+        zshrc_src_template: custom.zshrc.j2
+```
+
+> **Note**: Do not use `.zshrc.j2` as your custom template filename as it will just pick the default template instead.
 
 ## License
 
