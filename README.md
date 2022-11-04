@@ -25,6 +25,9 @@ Available variables are listed below, along with default values (see `defaults/m
     # default .zshrc template
     zshrc_src_template: .zshrc.j2 # Points to the default template delivered with this role
 
+    # default .p10k.zsh file
+    p10k_src_file: .p10k.zsh # Points to the default file delivered with this role
+
 ## Dependencies
 
 None.
@@ -56,6 +59,13 @@ If you want to provide your own template for the `.zshrc` file, you can change t
 ```
 
 > **Note**: Do not use `.zshrc.j2` as your custom template filename as it will just pick the default template instead.
+
+Similarly, you can also provide your own version of the `.p10k.zsh` by setting the `p10k_src_file` variable. The recommended approach is to generate your own file by running `p10k configure` on a system which already has oh-my-zsh with powerlevel10k installed, then copy the generated file (found at `~/.p10k.zsh`) into your project directory, for example at `files/custom.p10k.zsh`.
+
+> **Notes**:
+>
+> - Do not use `.p10k.zsh` as your custom filename as it will just pick the default template instead.
+> - Contrarily to the `.zshrc.j2` template, the custom `.p10k.zsh` will be copied **without** further modification, i.e. Jinja2 syntax is **not** supported in this file.
 
 ## License
 
