@@ -63,7 +63,7 @@
   become: yes
   become_user: '{{ item.username }}'
   copy:
-    src: .p10k.zsh
+    src: "{{ p10k_src_file }}"
     dest: ~/.p10k.zsh
     backup: yes
     mode: 'u=rw,go=r'

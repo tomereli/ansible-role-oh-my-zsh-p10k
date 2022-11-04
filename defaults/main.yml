@@ -10,3 +10,6 @@ oh_my_zsh_plugins:
 
 # default .zshrc template
 zshrc_src_template: .zshrc.j2 # Points to the default template delivered with this role
+
+# default .p10k.zsh file
+p10k_src_file: .p10k.zsh # Points to the default file delivered with this role
