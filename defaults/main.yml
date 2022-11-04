@@ -7,3 +7,6 @@ oh_my_zsh_plugins:
   - git
   - zsh-autosuggestions
   - zsh-syntax-highlighting
+
+# default .zshrc template
+zshrc_src_template: .zshrc.j2 # Points to the default template delivered with this role
