@@ -1,9 +1,9 @@
-# Ansible Role: Proxy
+# Ansible Role: oh_my_zsh_p10k
 
 [![Build Status](https://travis-ci.org/tomereli/ansible-role-oh-my-zsh-p10k.svg?branch=master)](https://travis-ci.org/tomereli/ansible-role-oh-my-zsh-p10k)
 [![Ansible Galaxy](http://img.shields.io/badge/galaxy-tomereli.oh_my_zsh_p10k-660198.svg)](https://galaxy.ansible.com/tomereli/oh_my_zsh_p10k)
 
-An Ansible role that configures oh-my-zsh with powerlevel10k theme.
+An Ansible role that installs and configures [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) with [powerlevel10k](https://github.com/romkatv/powerlevel10k) theme for specified users. You can provide your own `.zshrc` and `.p10k.zsh` files or use the provided ones.
 
 ## Requirements
 
@@ -30,7 +30,7 @@ Available variables are listed below, along with default values (see `defaults/m
 
 ## Dependencies
 
-None.
+None, only builtin modules are being used.
 
 ## Example Playbook
 
@@ -39,7 +39,7 @@ The following playbook configures oh-my-zsh with powerlevel10k theme for `testus
 ```yaml
 - hosts: all
   roles:
-    - role: tomereli.oh-my-zsh-p10k
+    - role: tomereli.oh_my_zsh_p10k
       vars:
         users:
             - username: testuser1
@@ -51,7 +51,7 @@ If you want to provide your own template for the `.zshrc` file, you can change t
 ```yaml
 - hosts: all
   roles:
-    - role: tomereli.oh-my-zsh-p10k
+    - role: tomereli.oh_my_zsh_p10k
       vars:
         users:
             - username: testuser1
