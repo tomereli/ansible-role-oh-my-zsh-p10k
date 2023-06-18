@@ -50,25 +50,27 @@
 
 - name: write .zshrc for users
   become: yes
-  become_user: '{{ item.username }}'
   template:
     src: "{{ zshrc_src_template }}"
     dest: '~/.zshrc'
     backup: yes
     mode: 'u=rw,go=r'
+    group: '{{ item.username }}'
+    owner: '{{ item.username }}'
   with_items: '{{ users }}'
   when: users is defined
 
 - name: write .p10k.zsh for users
   become: yes
-  become_user: '{{ item.username }}'
   copy:
     src: "{{ p10k_src_file }}"
     dest: ~/.p10k.zsh
     backup: yes
     mode: 'u=rw,go=r'
+    group: '{{ item.username }}'
+    owner: '{{ item.username }}'
   with_items: '{{ users }}'
-  when: users is defined 
+  when: users is defined
 
 - name: set default shell for users
   become: yes
