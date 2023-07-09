@@ -48,7 +48,8 @@
   with_items: '{{ users }}'
   when: users is defined
 
-- user:
+- name: get user info
+  user:
     name: '{{ item.username }}'
     state: present
   register: 'userinfo'
