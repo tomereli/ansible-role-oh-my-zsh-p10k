@@ -85,5 +85,18 @@
   user:
     name: '{{ item.username }}'
     shell: /bin/zsh
+  register: chsh_result
+  ignore_errors: true
   with_items: '{{ users }}'
   when: users is defined
+
+- debug:
+    msg: 'userinfo: {{ userinfo.results }}'
+  when: userinfo is defined and chsh_result.failed
+
+- name: fallback - set default shell (add to ~/.bashrc)
+  blockinfile:
+    path: '{{ item.home }}/.bashrc'
+    content: zsh
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined and chsh_result.failed
