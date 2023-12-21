@@ -25,7 +25,7 @@
 
     - name: Ensure user exists
       user:
-        name: "{{ item.username }}"
+        name: "{{ item }}"
         state: present
       with_items: '{{ users }}'
       when: users is defined

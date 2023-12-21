@@ -8,53 +8,53 @@
       - zsh
     state: present
 
-- name: clone oh-my-zsh for users
-  become: yes
-  become_user: '{{ item.username }}'
-  git:
-    repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
-    version: master
-    dest: '~/.oh-my-zsh'
-  with_items: '{{ users }}'
-  when: users is defined
-
-- name: clone powerlevel10k for users
-  become: yes
-  become_user: '{{ item.username }}'
-  git:
-    repo: 'https://github.com/romkatv/powerlevel10k.git'
-    version: master
-    dest: '~/.oh-my-zsh/custom/themes/powerlevel10k'
-  with_items: '{{ users }}'
-  when: users is defined
-
-- name: clone zsh-autosuggestions for users
-  become: yes
-  become_user: '{{ item.username }}'
-  git:
-    repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
-    version: master
-    dest: '~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
-  with_items: '{{ users }}'
-  when: users is defined
-
-- name: clone zsh-syntax-highlighting for users
-  become: yes
-  become_user: '{{ item.username }}'
-  git:
-    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
-    version: master
-    dest: '~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
-  with_items: '{{ users }}'
-  when: users is defined
-
 - name: get user info
   user:
-    name: '{{ item.username }}'
+    name: '{{ item }}'
     state: present
   register: 'userinfo'
   with_items: '{{ users }}'
   when: users is defined
+
+- debug:
+    msg: 'userinfo: {{ userinfo.results }}'
+  when: userinfo is defined
+
+- name: clone oh-my-zsh for users
+  become: yes
+  git:
+    repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
+    version: master
+    dest: '{{ item.home }}/.oh-my-zsh'
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
+
+- name: clone powerlevel10k for users
+  become: yes
+  git:
+    repo: 'https://github.com/romkatv/powerlevel10k.git'
+    version: master
+    dest: '{{ item.home }}/.oh-my-zsh/custom/themes/powerlevel10k'
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
+
+- name: clone zsh-autosuggestions for users
+  become: yes
+  git:
+    repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
+    version: master
+    dest: '{{ item.home }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
+
+- name: clone zsh-syntax-highlighting for users
+  become: yes
+  git:
+    repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
+    version: master
+    dest: '{{ item.home }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
 
 - name: write .zshrc for users
   become: yes
@@ -83,20 +83,29 @@
 - name: set default shell for users
   become: yes
   user:
-    name: '{{ item.username }}'
+    name: '{{ item.name }}'
     shell: /bin/zsh
   register: chsh_result
   ignore_errors: true
-  with_items: '{{ users }}'
-  when: users is defined
-
-- debug:
-    msg: 'userinfo: {{ userinfo.results }}'
-  when: userinfo is defined and chsh_result.failed
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
 
 - name: fallback - set default shell (add to ~/.bashrc)
+  become: yes
   blockinfile:
     path: '{{ item.home }}/.bashrc'
     content: zsh
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined and chsh_result.failed
+
+- name: Change permissions back to user
+  become: true
+  file:
+    dest: '{{ item.home }}/.oh-my-zsh'
+    group: '{{ item.group }}'
+    owner: '{{ item.uid }}'
+    recurse: true
+    # supposed to set directories to 755 and files to 644
+    mode: u=rwX,g=rX,o=rX
+  with_items: '{{ userinfo.results }}'
+  when: userinfo is defined
