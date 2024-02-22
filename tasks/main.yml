@@ -20,6 +20,14 @@
     msg: 'userinfo: {{ userinfo.results }}'
   when: userinfo is defined
 
+- name: set up global .gitconfig
+  become: yes
+  git_config:
+    name: safe.directory
+    scope: system
+    value: '*'
+
+
 - name: clone oh-my-zsh for users
   become: yes
   git:
