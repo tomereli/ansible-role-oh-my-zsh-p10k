@@ -42,8 +42,8 @@ The following playbook configures oh-my-zsh with powerlevel10k theme for `testus
     - role: tomereli.oh_my_zsh_p10k
       vars:
         users:
-            - username: testuser1
-            - username: testuser2
+            - testuser1
+            - testuser2
 ```
 
 If you want to provide your own template for the `.zshrc` file, you can set the `zshrc_src_template` variable so it points to your custom template, e.g. stored under `templates/custom.zshrc.j2` in your repo directory.<br>
@@ -55,7 +55,7 @@ You can also provide your own version of the `.p10k.zsh` by setting the `p10k_sr
     - role: tomereli.oh_my_zsh_p10k
       vars:
         users:
-            - username: testuser1
+            - testuser1
         zshrc_src_template: custom.zshrc.j2
         p10k_src_file: custom.p10k.zsh
 ```

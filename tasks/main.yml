@@ -1,96 +1,96 @@
 ---
 
-- name: install dependencies
-  become: yes
+- name: Install dependencies
+  become: true
   package:
     name:
       - git
       - zsh
     state: present
 
-- name: get user info
-  user:
+- name: Get user info
+  ansible.builtin.user:
     name: '{{ item }}'
     state: present
   register: 'userinfo'
   with_items: '{{ users }}'
   when: users is defined
 
-- debug:
+- ansible.builtin.debug:
     msg: 'userinfo: {{ userinfo.results }}'
   when: userinfo is defined
 
-- name: set up global .gitconfig
-  become: yes
-  git_config:
+- name: Set up global .gitconfig
+  become: true
+  community.general.git_config:
     name: safe.directory
     scope: system
     value: '*'
 
 
-- name: clone oh-my-zsh for users
-  become: yes
-  git:
+- name: Clone oh-my-zsh for users
+  become: true
+  ansible.builtin.git:
     repo: 'https://github.com/robbyrussell/oh-my-zsh.git'
     version: master
     dest: '{{ item.home }}/.oh-my-zsh'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: clone powerlevel10k for users
-  become: yes
-  git:
+- name: Clone powerlevel10k for users
+  become: true
+  ansible.builtin.git:
     repo: 'https://github.com/romkatv/powerlevel10k.git'
     version: master
     dest: '{{ item.home }}/.oh-my-zsh/custom/themes/powerlevel10k'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: clone zsh-autosuggestions for users
-  become: yes
-  git:
+- name: Clone zsh-autosuggestions for users
+  become: true
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
     version: master
     dest: '{{ item.home }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: clone zsh-syntax-highlighting for users
-  become: yes
-  git:
+- name: Clone zsh-syntax-highlighting for users
+  become: true
+  ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-syntax-highlighting.git'
     version: master
     dest: '{{ item.home }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: write .zshrc for users
-  become: yes
-  template:
+- name: Write .zshrc for users
+  become: true
+  ansible.builtin.template:
     src: "{{ zshrc_src_template }}"
     dest: '{{ item.home }}/.zshrc'
-    backup: yes
+    backup: true
     mode: 'u=rw,go=r'
     group: '{{ item.group }}'
     owner: '{{ item.uid }}'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: write .p10k.zsh for users
-  become: yes
-  copy:
+- name: Write .p10k.zsh for users
+  become: true
+  ansible.builtin.copy:
     src: "{{ p10k_src_file }}"
     dest: '{{ item.home }}/.p10k.zsh'
-    backup: yes
+    backup: true
     mode: 'u=rw,go=r'
     group: '{{ item.group }}'
     owner: '{{ item.uid }}'
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: set default shell for users
-  become: yes
-  user:
+- name: Set default shell for users
+  become: true
+  ansible.builtin.user:
     name: '{{ item.name }}'
     shell: /bin/zsh
   register: chsh_result
@@ -98,17 +98,17 @@
   with_items: '{{ userinfo.results }}'
   when: userinfo is defined
 
-- name: fallback - set default shell (add to ~/.bashrc)
-  become: yes
-  blockinfile:
+- name: Fallback - set default shell (add to ~/.bashrc)
+  become: true
+  ansible.builtin.blockinfile:
     path: '{{ item.home }}/.bashrc'
     content: zsh
   with_items: '{{ userinfo.results }}'
-  when: userinfo is defined and chsh_result.failed
+  when: userinfo is defined and chsh_result.failed is defined and chsh_result.failed
 
 - name: Change permissions back to user
   become: true
-  file:
+  ansible.builtin.file:
     dest: '{{ item.home }}/.oh-my-zsh'
     group: '{{ item.group }}'
     owner: '{{ item.uid }}'
