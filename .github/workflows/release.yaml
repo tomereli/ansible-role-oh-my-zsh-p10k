@@ -1,0 +1,32 @@
+name: release-please
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+env:
+  # For release-please, see available types at https://github.com/google-github-actions/release-please-action/tree/v4/?tab=readme-ov-file#release-types-supported
+  PROJECT_TYPE: simple
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: rp
+        if: github.event_name != 'pull_request' && github.ref_name == 'main'
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: ${{ env.PROJECT_TYPE }}
+      - name: Publish Ansible role to Galaxy
+        if: ${{ steps.rp.outputs.release_created }}
+        uses: robertdebock/galaxy-action@1.2.1
+        with:
+          galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
+          git_branch: main

@@ -101,10 +101,10 @@
 - name: fallback - set default shell (add to ~/.bashrc)
   become: yes
   blockinfile:
-    path: '{{ item.home }}/.bashrc'
+    path: '{{ item.item.home }}/.bashrc'
     content: zsh
-  with_items: '{{ userinfo.results }}'
-  when: userinfo is defined and chsh_result.failed
+  with_items: '{{ chsh_result.results }}'
+  when: userinfo is defined and item.failed
 
 - name: Change permissions back to user
   become: true
